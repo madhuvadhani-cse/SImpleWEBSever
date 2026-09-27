@@ -5,7 +5,6 @@ import ctypes
 
 PORT = 8000
 
-
 def get_ram():
     class MEMORYSTATUSEX(ctypes.Structure):
         _fields_ = [
@@ -17,7 +16,7 @@ def get_ram():
             ("ullAvailPageFile", ctypes.c_ulonglong),
             ("ullTotalVirtual", ctypes.c_ulonglong),
             ("ullAvailVirtual", ctypes.c_ulonglong),
-            ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
+            ("ullAvailExtendedVirtual", ctypes.c_ulonglong)
         ]
 
     memory = MEMORYSTATUSEX()
@@ -25,7 +24,6 @@ def get_ram():
     ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(memory))
 
     return round(memory.ullTotalPhys / (1024 ** 3), 2)
-
 
 class MyRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -44,6 +42,8 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         <body>
             <h1>My Laptop Device Specifications</h1>
 
+            <p><b>Name:</b> Madhuvadhani S</p>
+            <p><b>Register Number:</b> 26012082</p>
             <p><b>Device Name:</b> {device_name}</p>
             <p><b>Operating System:</b> {operating_system}</p>
             <p><b>Processor:</b> {processor}</p>
@@ -56,7 +56,6 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         self.wfile.write(html.encode())
-
 
 with socketserver.TCPServer(("", PORT), MyRequestHandler) as httpd:
     print(f"Server running at http://127.0.0.1:{PORT}")
