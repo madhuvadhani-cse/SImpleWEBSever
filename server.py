@@ -1,47 +1,10 @@
-# SImpleWEBSever
-# EX01 Developing a Simple Webserver
-## Date:
-
-## AIM:
-To develop a simple webserver to serve html pages and display the Device Specifications of your Laptop.
-
-## DESIGN STEPS:
-### Step 1: 
-HTML content creation.
-
-### Step 2:
-Design of webserver workflow.
-
-### Step 3:
-Implementation using Python code.
-
-### Step 4:
-Import the necessary modules.
-
-### Step 5:
-Define a custom request handler.
-
-### Step 6:
-Start an HTTP server on a specific port.
-
-### Step 7:
-Run the Python script to serve web pages.
-
-### Step 8:
-Serve the HTML pages.
-
-### Step 9:
-Start the server script and check for errors.
-
-### Step 10:
-Open a browser and navigate to http://127.0.0.1:8000 (or the assigned port).
-
-## PROGRAM:import http.server
+import http.server
 import socketserver
 import platform
 import ctypes
 
 PORT = 8000
+
 
 def get_ram():
     class MEMORYSTATUSEX(ctypes.Structure):
@@ -54,7 +17,7 @@ def get_ram():
             ("ullAvailPageFile", ctypes.c_ulonglong),
             ("ullTotalVirtual", ctypes.c_ulonglong),
             ("ullAvailVirtual", ctypes.c_ulonglong),
-            ("ullAvailExtendedVirtual", ctypes.c_ulonglong)
+            ("ullAvailExtendedVirtual", ctypes.c_ulonglong),
         ]
 
     memory = MEMORYSTATUSEX()
@@ -62,6 +25,7 @@ def get_ram():
     ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(memory))
 
     return round(memory.ullTotalPhys / (1024 ** 3), 2)
+
 
 class MyRequestHandler(http.server.BaseHTTPRequestHandler):
 
@@ -72,12 +36,14 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         ram = get_ram()
 
         html = f"""
+        <!DOCTYPE html>
         <html>
         <head>
             <title>Laptop Device Specifications</title>
         </head>
         <body>
             <h1>My Laptop Device Specifications</h1>
+
             <p><b>Device Name:</b> {device_name}</p>
             <p><b>Operating System:</b> {operating_system}</p>
             <p><b>Processor:</b> {processor}</p>
@@ -91,20 +57,7 @@ class MyRequestHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(html.encode())
 
+
 with socketserver.TCPServer(("", PORT), MyRequestHandler) as httpd:
     print(f"Server running at http://127.0.0.1:{PORT}")
     httpd.serve_forever()
-
-
-## OUTPUT:
-
-My Laptop Device Specifications
-
-Device Name: TL15-53M-G2
-Operating System: Windows 11
-Processor: Intel64 Family 6 Model 186 Stepping 2, GenuineIntel
-RAM: 15.75 GB
-
-
-## RESULT:
-The program for implementing simple webserver is executed successfully.
